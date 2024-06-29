@@ -31,17 +31,17 @@
         [Phone]
         [StringLength(20)]
         [Column("phone")]
-        public string Phone { get; set; } = "";
+        public string? Phone { get; set; }
 
         [StringLength(255)]
         [Column("full_name")]
-        public string FullName { get; set; } = "";
+        public string? FullName { get; set; }
         [Column("date_of_birth")]
         public DateTime? DateOfBirth { get; set; }
 
         [StringLength(200)]
         [Column("country")]
-        public string Country { get; set; } = "";
+        public string? Country { get; set; }
 
         public ICollection<Watchlist>? Watchlists { get; set; }
     }

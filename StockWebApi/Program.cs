@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using StockWebApi.Filters;
 using StockWebApi.Models;
 using StockWebApi.Repositories;
 using StockWebApi.Services;
@@ -21,24 +22,32 @@ builder.Services.AddScoped<IWatchListRepository, WatchListRepository>();
 builder.Services.AddScoped<IWatchListService, WatchListService>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<IQuoteRepository, QuoteRepository>();
+builder.Services.AddScoped<IQuoteService, QuoteService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ICWRepository, CWRepository>();
+builder.Services.AddScoped<ICWService, CWService>();
+
+//builder.Services.AddControllers(options =>
+//{
+//    options.Filters.Add<JwtAuthorizeFilter>();
+//});
+builder.Services.AddScoped<JwtAuthorizeFilter>();
+builder.Services.AddAuthorization();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
-        //.AddJwtBearer(options =>
-        //{
-        //    options.TokenValidationParameters = new TokenValidationParameters
-        //    {
-        //        ValidateIssuer = true,
-        //        ValidateAudience = true,
-        //        ValidateIssuerSigningKey = true,
-        //        ValidIssuer = "yourIssuer",
-        //        ValidAudience = "yourAudience",
-        //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("yourSecretKey")),
-        //        ValidateLifetime = true, // Kiểm tra hạn của token
-        //        ClockSkew = TimeSpan.Zero // Không chấp nhận sự sai lệch về thời gian
-        //    };
-        //});
+
+builder.Services.AddAuthentication(
+    options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }
+);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,9 +59,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
+
+var webSocketOptions = new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+};
+
+app.UseWebSockets(webSocketOptions);
 
 app.Run();

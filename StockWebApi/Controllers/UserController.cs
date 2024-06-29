@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StockWebApi.Models;
 using StockWebApi.Services;
 using StockWebApi.ViewModels;
@@ -14,6 +15,7 @@ namespace StockWebApi.Controllers
         {
             _userService = userService;
         }
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> RegisUser(RegisterViewModel registerViewModel)
         {
@@ -28,6 +30,7 @@ namespace StockWebApi.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using StockWebApi.Attributes;
+using StockWebApi.Extensions;
 using StockWebApi.Filters;
 using StockWebApi.Services;
 using System.Security.Claims;
@@ -10,29 +12,23 @@ namespace StockWebApi.Controllers
     [Route("api/[controller]")]
     public class WatchListController : ControllerBase
     {
-        //Vì đã lưu Token vào AuthorizationFilterContext trong class JwtAuthorizeAttribute nên cần inject vào để lấy ra 
-        private readonly AuthorizationFilterContext _context;
         private readonly IWatchListService _watchListService;
         private readonly IUserService _userService;
         private readonly IStockService _stockService;
-        public WatchListController(IWatchListService watchListService, AuthorizationFilterContext context, 
-            IUserService userService)
+        public WatchListController(IWatchListService watchListService,  
+            IUserService userService,IStockService stockService)
         {
             _watchListService = watchListService;
-            _context = context;
             _userService = userService;
+            _stockService = stockService;
         }
 
         [HttpPost("AddStockToWatchList/{stockId}")]
         [JwtAuthorize]
         public async Task<IActionResult> AddStockToWatchList(int stockId)
         {
-            if (!int.TryParse(_context.HttpContext.User
-                .FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId))
-            {
-                return Unauthorized();
-            }
-
+            //Lấy UserId từ context
+            int userId = HttpContext.GetUserId();
             var user = await _userService.GetUserById(userId);
             var stock = await _stockService.GetStockById(stockId);
             if (user == null)
@@ -51,7 +47,10 @@ namespace StockWebApi.Controllers
             }
 
             await _watchListService.AddStockToWatchList(userId,stockId);
-            return Ok();
+            return Ok(new
+            {
+                message = "Insert stock to watch list"
+            }) ;
         }
     }
 }

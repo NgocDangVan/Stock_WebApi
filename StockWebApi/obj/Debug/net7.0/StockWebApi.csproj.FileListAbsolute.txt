@@ -75,3 +75,4 @@ E:\Prj\C#\StockWebApi\StockWebApi\bin\Debug\net7.0\runtimes\win\lib\net6.0\Syste
 E:\Prj\C#\StockWebApi\StockWebApi\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 E:\Prj\C#\StockWebApi\StockWebApi\bin\Debug\net7.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 E:\Prj\C#\StockWebApi\StockWebApi\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\Prj\C#\StockWebApi\StockWebApi\obj\Debug\net7.0\StockWebApi.sourcelink.json

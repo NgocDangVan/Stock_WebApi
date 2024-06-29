@@ -1,0 +1,135 @@
+﻿<!DocType html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" />
+        <title>Document</title>
+    </head>
+    <script>
+        // const socket = new WebSocket('ws://localhost:7298/api/ws');
+        // socket.onopen = () => {
+        //     debugger
+        //     console.log('Connected to the server via Websocket');
+        // }
+
+        // socket.onmessage = (event) => {
+        //     debugger
+        //     const data = JSON.parse(event.data);
+        //     const x = data.x ?? 0;
+        //     const y = data.y ?? 0;
+        //     console.log(`x = ${x}, y = ${y}`);
+        //     //Hiển thị giá trị x và y trên giao diện
+        //     document.getElementById('x-value').innerText = `X: ${x}`;
+        //     document.getElementById('y-value').innerText = `Y: ${y}`;
+        // }
+        const page = 1;
+        const limit = 10;
+        const socket = new WebSocket(`wss://localhost:7298/api/quote/ws?page=${page}&limit=${limit}`);
+        // const socket = new WebSocket(`https:localhost:7298/api/quote/ws?page=${page}&limit=${limit}`);
+        socket.onopen = () => {
+            debugger
+            console.log("Connected");
+        }
+        socket.onmessage = (event) => {
+            const quotes = JSON.parse(event.data);
+            debugger
+            var tableBody = document.getElementById('table-body');
+            // Xoa toan bo du lieu hien tai trong bang
+            while (tableBody.firstChild) {
+                tableBody.removeChild(tableBody.firstChild);
+            }
+            //Duyet qua cac doi tuong va tao hang trong bang
+            quotes.forEach(function (quote) {
+                // Tao mot hang moi trong bang
+                var row = document.createElement("tr");
+
+                var quoteIdCell = document.createElement("td");
+                quoteIdCell.textContent = quote.quoteId;
+                row.appendChild(quoteIdCell);
+
+                var SymbolCell = document.createElement("td");
+                SymbolCell.textContent = quote.Symbol;
+                row.appendChild(SymbolCell);
+
+                var CompanyNameCell = document.createElement("td");
+                CompanyNameCell.textContent = quote.CompanyName;
+                row.appendChild(CompanyNameCell);
+
+                var IndexNameCell = document.createElement("td");
+                IndexNameCell.textContent = quote.IndexName;
+                row.appendChild(IndexNameCell);
+
+                var IndexSymbolCell = document.createElement("td");
+                IndexSymbolCell.textContent = quote.IndexSymbol;
+                row.appendChild(IndexSymbolCell);
+
+                var MarketCapCell = document.createElement("td");
+                MarketCapCell.textContent = quote.MarketCap;
+                row.appendChild(MarketCapCell);
+
+                var SectorEnCell = document.createElement("td");
+                SectorEnCell.textContent = quote.SectorEn;
+                row.appendChild(SectorEnCell);
+
+                var IndustryEnCell = document.createElement("td");
+                IndustryEnCell.textContent = quote.IndustryEn;
+                row.appendChild(IndustryEnCell);
+
+                var SectorCell = document.createElement("td");
+                SectorCell.textContent = quote.Sector;
+                row.appendChild(SectorCell);
+
+                var IndustryCell = document.createElement("td");
+                IndustryCell.textContent = quote.Industry;
+                row.appendChild(IndustryCell);
+
+                var StockTypeCell = document.createElement("td");
+                StockTypeCell.textContent = quote.StockType;
+                row.appendChild(StockTypeCell);
+
+                var PriceCell = document.createElement("td");
+                PriceCell.textContent = quote.Price;
+                row.appendChild(PriceCell);
+
+                var ChangeCell = document.createElement("td");
+                ChangeCell.textContent = quote.Change;
+                row.appendChild(ChangeCell);
+
+                var PercentChangeCell = document.createElement("td");
+                PercentChangeCell.textContent = quote.PercentChange;
+                row.appendChild(PercentChangeCell);
+
+                var VolumeCell = document.createElement("td");
+                VolumeCell.textContent = quote.Volume;
+                row.appendChild(VolumeCell);
+
+                var TimeStampCell = document.createElement("td");
+                TimeStampCell.textContent = new Date(quote.TimeStamp).toLocaleString();
+                row.appendChild(TimeStampCell);
+
+
+                tableBody.appendChild(row);
+            });
+        }
+        socket.onclose = () => {
+            console.log('Connection closed');
+        }
+    </script>
+    <body>
+        <h1>Test Websocket, show x, y realtime</h1>
+        <table id="table-body">
+            
+        </table>
+        <style>
+            table {
+                border-collapse: collapse;
+            }
+
+            table td {
+                border: 1px solid black;
+                padding: 8px;
+            }
+        </style>
+    </body>
+</html>
